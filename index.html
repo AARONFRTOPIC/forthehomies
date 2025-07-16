@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>World Chat</title>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <h2>World Chat</h2>
+  <div id="chat">
+    <div id="messages"></div>
+  </div>
+  <input type="text" id="username" placeholder="Enter your name">
+  <input type="text" id="message" placeholder="Type a message and press Enter">
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    const socket = io();
+
+    const messagesDiv = document.getElementById('messages');
+    const messageInput = document.getElementById('message');
+    const usernameInput = document.getElementById('username');
+
+    messageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && usernameInput.value.trim() && messageInput.value.trim()) {
+        const msg = {
+          user: usernameInput.value,
+          text: messageInput.value
+        };
+        socket.emit('chat message', msg);
+        messageInput.value = '';
+      }
+    });
+
+    socket.on('chat message', function(msg) {
+      const msgEl = document.createElement('div');
+      msgEl.textContent = msg.user + ': ' + msg.text;
+      messagesDiv.appendChild(msgEl);
+    });
+  </script>
+</body>
+</html>
