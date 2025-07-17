@@ -1,0 +1,31 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+  }
+  .container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 10px #ccc;
+  }
+  .hidden {
+    display: none;
+  }
+  #messages {
+    height: 300px;
+    overflow-y: scroll;
+    border: 1px solid #ddd;
+    padding: 10px;
+    margin: 10px 0;
+  }
+  .msg {
+    margin: 5px 0;
+  }
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  

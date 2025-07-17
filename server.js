@@ -1,20 +1,46 @@
-// server.js
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
-
+const express = require("express");
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
+const http = require("http").createServer(app);
+const io = require("socket.io")(http);
+const multer = require("multer");
+const path = require("path");
 
-app.use(express.static('.')); // serve index.html from current dir
+const AUTH_KEY = "YOUR_SECRET_KEY"; // change this before deploying
 
-io.on('connection', (socket) => {
-  socket.on('chat message', (msg) => {
-    io.emit('chat message', msg); // broadcast to everyone
+let messages = [];
+
+app.use(express.static(__dirname + "/public"));
+app.use(express.json());
+
+const storage = multer.diskStorage({
+  destination: "./public/uploads/",
+  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+});
+const upload = multer({ storage });
+
+app.post("/upload", upload.single("file"), (req, res) => {
+  if (req.query.key !== AUTH_KEY) return res.sendStatus(403);
+  res.json({ file: `/uploads/${req.file.filename}` });
+});
+
+app.get("/load", (req, res) => {
+  if (req.query.key !== AUTH_KEY) return res.sendStatus(403);
+  res.json(messages);
+});
+
+io.on("connection", (socket) => {
+  socket.on("auth", (key) => {
+    if (key !== AUTH_KEY) {
+      socket.emit("auth_fail");
+      return socket.disconnect();
+    }
+
+    socket.on("msg", (data) => {
+      messages.push(data);
+      if (messages.length > 200) messages.shift(); // limit
+      io.emit("msg", data);
+    });
   });
 });
 
-server.listen(3000, () => {
-  console.log('World Chat running at http://localhost:3000');
-});
+http.listen(3000, () => console.log("Running on port 3000"));

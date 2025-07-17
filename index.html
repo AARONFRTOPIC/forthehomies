@@ -1,137 +1,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Pathways Undercover Chat</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    :root {
-      --primary: #0a0a1a;
-      --secondary: #121a2e;
-      --accent: #1d2b50;
-      --text: #e6e6e6;
-      --highlight: #00b4d8;
-      --red-accent: #ff3860;
-      --green-accent: #2ecc71;
-      --light-blue: #72ddf7;
-      --normal-blue: #4361ee;
-    }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--primary);
-      color: var(--text);
-      margin: 0;
-      padding: 20px;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    h2 {
-      color: var(--light-blue);
-      text-align: center;
-      font-size: 2.2rem;
-      margin-bottom: 1.5rem;
-      letter-spacing: 1px;
-      text-shadow: 0 0 10px var(--normal-blue);
-      padding: 10px;
-      border-bottom: 2px solid var(--red-accent);
-      border-top: 2px solid var(--green-accent);
-    }
-    #chat {
-      background-color: var(--secondary);
-      border-radius: 8px;
-      padding: 20px;
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 4px 20px rgba(0, 180, 216, 0.2);
-      border: 1px solid var(--accent);
-    }
-    #messages {
-      flex-grow: 1;
-      overflow-y: auto;
-      padding: 10px;
-      margin-bottom: 15px;
-      background-color: rgba(0, 0, 0, 0.2);
-      border-radius: 4px;
-    }
-    #messages div {
-      padding: 10px 15px;
-      margin: 5px 0;
-      border-radius: 4px;
-      background: rgba(30, 30, 60, 0.5);
-      border-left: 3px solid var(--normal-blue);
-      word-break: break-word;
-      transition: all 0.2s ease;
-    }
-    #messages div:hover {
-      background: rgba(40, 40, 80, 0.7);
-      border-left-color: var(--green-accent);
-    }
-    input {
-      padding: 14px 18px;
-      border: none;
-      border-radius: 6px;
-      margin-top: 15px;
-      background-color: rgba(255, 255, 255, 0.1);
-      color: var(--text);
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      border-bottom: 2px solid transparent;
-    }
-    input:focus {
-      outline: none;
-      background-color: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 0 0 2px var(--light-blue);
-      border-bottom-color: var(--red-accent);
-    }
-    input::placeholder {
-      color: rgba(255, 255, 255, 0.5);
-    }
-    @media (max-width: 768px) {
-      body {
-        padding: 10px;
-      }
-      #chat {
-        padding: 15px;
-      }
-    }
-  </style>
+  <title>World Docs</title>
+  <meta name="description" content="World Docs - AI-powered collaboration platform.">
+  <meta name="keywords" content="docs, world, education, notes">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>PATHWAYS UNDERCOVER CHAT</h2>
-  <div id="chat">
-    <div id="messages"></div>
+  <div class="container">
+    <h2>World Docs Chat</h2>
+    <div>
+      <input id="key" placeholder="Enter Access Key" />
+      <button onclick="auth()">Unlock</button>
+    </div>
+    <div id="chatbox" class="hidden">
+      <div class="topbar">
+        <input id="username" placeholder="Your name" />
+        <label><input type="checkbox" id="notify"> 🔔</label>
+        <label><input type="checkbox" id="save"> 💾</label>
+        <input type="file" id="fileInput" />
+      </div>
+      <div id="messages"></div>
+      <input id="msg" placeholder="Type..." />
+    </div>
   </div>
-  <input type="text" id="username" placeholder="Enter your name">
-  <input type="text" id="message" placeholder="Type a message and press Enter">
 
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <script>
-    const socket = io();
-
-    const messagesDiv = document.getElementById('messages');
-    const messageInput = document.getElementById('message');
-    const usernameInput = document.getElementById('username');
-
-    messageInput.addEventListener('keypress', function(e) {
-      if (e.key === 'Enter' && usernameInput.value.trim() && messageInput.value.trim()) {
-        const msg = {
-          user: usernameInput.value,
-          text: messageInput.value
-        };
-        socket.emit('chat message', msg);
-        messageInput.value = '';
-      }
-    });
-
-    socket.on('chat message', function(msg) {
-      const msgEl = document.createElement('div');
-      msgEl.textContent = msg.user + ': ' + msg.text;
-      messagesDiv.appendChild(msgEl);
-    });
-  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
 </body>
 </html>
